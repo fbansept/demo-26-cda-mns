@@ -1,8 +1,9 @@
 package edu.ban7.demo26cdamns.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.dao.AppUserDao;
 import edu.ban7.demo26cdamns.model.AppUser;
-import jakarta.validation.Valid;
+import edu.ban7.demo26cdamns.view.AppUserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,13 @@ public class AppUserController {
     }
 
     @GetMapping("/user/list")
+    @JsonView(AppUserView.class)
     public List<AppUser> getAll() {
         return appUserDao.findAll();
     }
 
     @GetMapping("/user/{id}")
+    @JsonView(AppUserView.class)
     public ResponseEntity<AppUser> get(@PathVariable int id) {
 
         Optional<AppUser> optionalUser = appUserDao.findById(id);
@@ -43,6 +46,7 @@ public class AppUserController {
     }
 
     @PostMapping("/user")
+    @JsonView(AppUserView.class)
     public ResponseEntity<AppUser> create(
             @RequestBody
             @Validated(AppUser.OnCreate.class)
@@ -92,6 +96,7 @@ public class AppUserController {
         //On réaffecte les anciennes valeurs qui ne doivent pas etre changée
         userToUpdate.setEmail(optionalUser.get().getEmail());
         userToUpdate.setPassword(optionalUser.get().getPassword());
+        userToUpdate.setRole(optionalUser.get().getRole());
 
         appUserDao.save(userToUpdate);
 

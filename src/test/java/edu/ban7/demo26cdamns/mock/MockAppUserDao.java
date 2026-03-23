@@ -2,6 +2,7 @@ package edu.ban7.demo26cdamns.mock;
 
 import edu.ban7.demo26cdamns.dao.AppUserDao;
 import edu.ban7.demo26cdamns.model.AppUser;
+import edu.ban7.demo26cdamns.model.Role;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -107,7 +108,15 @@ public class MockAppUserDao implements AppUserDao {
     public Optional<AppUser> findById(Integer id) {
 
         if(id == 1) {
-            return Optional.of(new AppUser(1, "a@a.com","root","UserA"));
+            Role roleAdmin = new Role(1,"ADMIN");
+            AppUser fakeUser = new AppUser(
+                    1, 
+                    "a@a.com",
+                    "root",
+                    "UserA", 
+                    roleAdmin);
+            
+            return Optional.of(fakeUser);
         }
 
         return Optional.empty();
