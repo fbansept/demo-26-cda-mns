@@ -1,6 +1,7 @@
 package edu.ban7.demo26cdamns.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import edu.ban7.demo26cdamns.view.AcknowledgeView;
 import edu.ban7.demo26cdamns.view.AppUserView;
 import edu.ban7.demo26cdamns.view.ComponentView;
 import jakarta.persistence.*;
@@ -27,7 +28,7 @@ public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(AppUserView.class)
+    @JsonView({AppUserView.class, AcknowledgeView.class})
     protected Integer id;
 
     @Column(nullable = false, unique = true) //l'email en bdd est obligatoire et unique

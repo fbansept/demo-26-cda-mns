@@ -1,6 +1,7 @@
 package edu.ban7.demo26cdamns.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import edu.ban7.demo26cdamns.view.AcknowledgeView;
 import edu.ban7.demo26cdamns.view.ComponentView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -17,37 +18,34 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@IdClass(Acknowledge.Key.class)
 public class Acknowledge {
 
     @Embeddable
-    public class Key implements Serializable {
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Key implements Serializable {
         @Column(name = "user_id")
         Integer userId;
         @Column(name = "skill_id")
         Integer skillId;
     }
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    protected Integer id;
-
-    @Id
-    protected Integer userId;
-
-    @Id
-    protected Integer skillId;
+    @EmbeddedId
+    private Key id;
 
     @ManyToOne
-    @MapsId ("userId")
-    @JoinColumn (name = "user_id" )
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
+    @JsonView(AcknowledgeView.class)
     protected AppUser user;
 
     @ManyToOne
-    @MapsId ("skillId")
-    @JoinColumn (name = "skill_id" )
+    @MapsId("skillId")
+    @JoinColumn(name = "skill_id")
+    @JsonView(AcknowledgeView.class)
     protected Skill skill;
 
+    @JsonView(AcknowledgeView.class)
     protected int level;
 
 }

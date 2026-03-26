@@ -1,6 +1,7 @@
 package edu.ban7.demo26cdamns.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import edu.ban7.demo26cdamns.view.AcknowledgeView;
 import edu.ban7.demo26cdamns.view.ComponentView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ public class Skill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(AcknowledgeView.class)
     protected Integer id;
 
     @Column(length = 20,nullable = false, unique = true)

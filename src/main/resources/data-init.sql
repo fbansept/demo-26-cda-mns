@@ -20,3 +20,13 @@ INSERT INTO tag_component (component_id, tag_id)  VALUES
     (1, 1),
     (1, 2),
     (2, 2);
+
+INSERT INTO skill (name)  VALUES
+      ('developpeur'),
+      ('concepteur'),
+      ('designer');
+
+INSERT INTO acknowledge (user_id ,skill_id , level )  VALUES
+      (2, 1, 5),
+      (2, 2, 1),
+      (3, 1, 2);
