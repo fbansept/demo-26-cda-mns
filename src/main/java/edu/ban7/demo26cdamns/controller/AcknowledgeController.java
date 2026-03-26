@@ -30,7 +30,7 @@ public class AcknowledgeController {
     }
 
     @GetMapping("/acknowledge/{idUser}/{idSkill}")
-    @JsonView(AcknowledgeView.class)
+    @JsonView(AcknowledgeView.Extra.class)
     public ResponseEntity<Acknowledge> get(
             @PathVariable int idUser,
             @PathVariable int idSkill) {
@@ -94,6 +94,16 @@ public class AcknowledgeController {
 
     }
 
+    /**
+     * Exemple
+     * http://localhost:8080/acknowledge/2/1
+     * 
+     * 
+     * @param idUser
+     * @param idSkill
+     * @param acknowledgeToUpdate
+     * @return
+     */
     @PutMapping("/acknowledge/{idUser}/{idSkill}")
     public ResponseEntity<Void> update(
             @PathVariable int idUser,

@@ -3,6 +3,7 @@ package edu.ban7.demo26cdamns.controller;
 import edu.ban7.demo26cdamns.dao.RoleDao;
 import edu.ban7.demo26cdamns.model.Role;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,21 +14,23 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/role")
 public class RoleController {
     
-    protected RoleDao roleDao;
+    protected final RoleDao roleDao;
 
-    @Autowired
-    public RoleController(RoleDao roleDao) {
-        this.roleDao = roleDao;
-    }
+//    @Autowired
+//    public RoleController(RoleDao roleDao) {
+//        this.roleDao = roleDao;
+//    }
 
-    @GetMapping("/role/list")
+    @GetMapping("/list")
     public List<Role> getAll() {
         return roleDao.findAll();
     }
 
-    @GetMapping("/role/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Role> get(@PathVariable int id) {
 
         Optional<Role> optionalRole = roleDao.findById(id);
@@ -42,7 +45,7 @@ public class RoleController {
 
     }
 
-    @PostMapping("/role")
+    @PostMapping
     public ResponseEntity<Role> create(
             @RequestBody
             @Valid
@@ -56,7 +59,7 @@ public class RoleController {
 
     }
 
-    @DeleteMapping("/role/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
 
         Optional<Role> optionalRole = roleDao.findById(id);
@@ -72,7 +75,7 @@ public class RoleController {
 
     }
 
-    @PutMapping("/role/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> update(
             @PathVariable int id,
             @RequestBody

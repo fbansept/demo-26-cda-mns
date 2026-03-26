@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AcknowledgeDao extends JpaRepository<Acknowledge, Acknowledge.Key> {
+
+    
 }

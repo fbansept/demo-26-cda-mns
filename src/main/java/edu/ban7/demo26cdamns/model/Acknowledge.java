@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
@@ -37,12 +39,14 @@ public class Acknowledge {
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     @JsonView(AcknowledgeView.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     protected AppUser user;
 
     @ManyToOne
     @MapsId("skillId")
     @JoinColumn(name = "skill_id")
     @JsonView(AcknowledgeView.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     protected Skill skill;
 
     @JsonView(AcknowledgeView.class)

@@ -3,10 +3,11 @@ INSERT INTO role ( name ) VALUES
      ('USER'),
      ('SUPPLIER');
 
-INSERT INTO app_user ( email, password, pseudo, role_id ) VALUES
-    ('a@a.com', 'root', 'Utilisateur A', 1),
-    ('b@b.com', 'root', 'Utilisateur B', 3),
-    ('c@c.com', 'root', 'Utilisateur C', 2);
+insert into app_user (role_id, created_at, updated_at, pseudo, email, password)
+values  (1, '2021-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur A', 'a@a.com', 'root'),
+        (2, '2026-10-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur C', 'c@c.com', 'root'),
+        (3, '2023-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur B', 'b@b.com', 'root');
+
 
 INSERT INTO component (serial_number, name, description, loaner_id) VALUES
     ('ECR0000138', 'Ecran de salle', 'Rayure sur le coté', null),

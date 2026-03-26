@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.dao.AppUserDao;
 import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.view.AppUserView;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "AppUser", description = "API pour manipuler les utilisateurs")
 public class AppUserController {
     
     protected AppUserDao appUserDao;
@@ -25,12 +30,20 @@ public class AppUserController {
 
     @GetMapping("/user/list")
     @JsonView(AppUserView.class)
+    
     public List<AppUser> getAll() {
         return appUserDao.findAll();
     }
 
     @GetMapping("/user/{id}")
     @JsonView(AppUserView.class)
+    @Operation(
+            summary = "Fetch user by id",
+            description = "fetch the user with id in URL")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation"),
+            @ApiResponse(responseCode = "404", description = "id user not found")
+    })
     public ResponseEntity<AppUser> get(@PathVariable int id) {
 
         Optional<AppUser> optionalUser = appUserDao.findById(id);

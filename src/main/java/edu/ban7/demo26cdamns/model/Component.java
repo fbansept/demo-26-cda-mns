@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class Component {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     @JsonView(ComponentView.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     protected List<Tag> tags = new ArrayList<>();
 
 }
