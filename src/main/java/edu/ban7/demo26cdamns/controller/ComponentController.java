@@ -2,7 +2,9 @@ package edu.ban7.demo26cdamns.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.dao.ComponentDao;
+import edu.ban7.demo26cdamns.model.Acknowledge;
 import edu.ban7.demo26cdamns.model.Component;
+import edu.ban7.demo26cdamns.view.AcknowledgeView;
 import edu.ban7.demo26cdamns.view.ComponentView;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,15 @@ public class ComponentController {
     @JsonView(ComponentView.class)
     public List<Component> getAll() {
         return componentDao.findAll();
+    }
+
+    @GetMapping("/component/list-v2")
+    @JsonView(ComponentView.class)
+    public List<Component> getAllV2() {
+
+        List<Component> list = componentDao.retourneTout();
+
+        return list;
     }
 
     @GetMapping("/component/{id}")

@@ -2,7 +2,9 @@ package edu.ban7.demo26cdamns.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.dao.AppUserDao;
+import edu.ban7.demo26cdamns.dto.AppUserStat;
 import edu.ban7.demo26cdamns.model.AppUser;
+import edu.ban7.demo26cdamns.model.Role;
 import edu.ban7.demo26cdamns.view.AppUserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,8 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "AppUser", description = "API pour manipuler les utilisateurs")
@@ -30,10 +35,74 @@ public class AppUserController {
 
     @GetMapping("/user/list")
     @JsonView(AppUserView.class)
-    
     public List<AppUser> getAll() {
         return appUserDao.findAll();
     }
+
+    @GetMapping("/user/list-admin")
+    @JsonView(AppUserView.class)
+    public List<AppUser> getAllAdmin() {
+
+        List<AppUser> userList = appUserDao.findAll();
+
+        List<AppUser> adminList = new ArrayList<>();
+
+        for (AppUser user : userList) {
+            if(user.getRole().getName().equals("ADMIN")) {
+                adminList.add(user);
+            }
+        }
+
+        return adminList;
+    }
+
+    @GetMapping("/user/list-admin-v1.5")
+    @JsonView(AppUserView.class)
+    public List<AppUser> getAllAdminWithStream() {
+
+        return appUserDao.findAll().stream()
+                .filter(u -> u.getRole().getName().equals("ADMIN"))
+                .toList();
+    }
+
+    @GetMapping("/user/list-admin-v2")
+    @JsonView(AppUserView.class)
+    public List<AppUser> getAllAdminV2() {
+        return appUserDao.findAllByRole(new Role(1, "ADMIN"));
+    }
+
+    @GetMapping("/user/list-admin-v3")
+    @JsonView(AppUserView.class)
+    public List<AppUser> getAllAdminV3() {
+        return appUserDao.retourneListeAdmin();
+    }
+
+    @GetMapping("/user/list-admin-v4")
+    @JsonView(AppUserView.class)
+    public List<AppUser> getAllAdminV4() {
+        return appUserDao.retourneListeSelonNomRole("ADMIN");
+    }
+
+    @GetMapping("/user/list-admin-v4.5")
+    @JsonView(AppUserView.class)
+    public List<AppUser> getAllAdminV4_5() {
+
+        List<AppUser> admins = appUserDao.retourneListeSelonRole(new Role(1, "ADMIN"));
+
+        return admins;
+    }
+
+    @GetMapping("/user/stat-admin")
+    public Object[][] getStatAdmin() {
+        return appUserDao.retourneTableauRepartitionRole();
+    }
+    
+
+    @GetMapping("/user/stat-admin-v2")
+    public List<AppUserStat> getStatAdminV2() {
+        return appUserDao.retourneStatRole();
+    }
+
 
     @GetMapping("/user/{id}")
     @JsonView(AppUserView.class)

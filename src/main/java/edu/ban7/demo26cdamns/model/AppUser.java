@@ -57,7 +57,7 @@ public class AppUser {
     @JsonView({AppUserView.class, ComponentView.class, AcknowledgeView.Extra.class})
     protected String pseudo;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(AppUserView.class)
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     protected Role role;

@@ -6,7 +6,9 @@ INSERT INTO role ( name ) VALUES
 insert into app_user (role_id, created_at, updated_at, pseudo, email, password)
 values  (1, '2021-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur A', 'a@a.com', 'root'),
         (2, '2026-10-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur C', 'c@c.com', 'root'),
-        (3, '2023-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur B', 'b@b.com', 'root');
+        (3, '2023-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur B', 'b@b.com', 'root'),
+        (3, '2023-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur D', 'd@d.com', 'root'),
+        (null, '2023-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisateur E', 'e@e.com', 'root');
 
 
 INSERT INTO component (serial_number, name, description, loaner_id) VALUES
