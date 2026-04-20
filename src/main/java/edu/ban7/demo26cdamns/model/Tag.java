@@ -30,8 +30,8 @@ public class Tag {
     @Length(min = 3, max = 20)
     @JsonView(ComponentView.class)
     protected String name;
-
-    @ManyToMany(mappedBy = "tags")
-    protected List<Component> components;
+//
+//    @ManyToMany(mappedBy = "tags")
+//    protected List<Component> components;
 
 }

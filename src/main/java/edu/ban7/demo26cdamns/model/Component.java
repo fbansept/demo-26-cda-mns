@@ -61,4 +61,9 @@ public class Component {
     @OnDelete(action = OnDeleteAction.CASCADE)
     protected List<Tag> tags = new ArrayList<>();
 
+    @ManyToOne(optional = false)
+    @JsonView(ComponentView.class)
+    //@JsonIgnore palliatif mais pas une bonne solution
+    protected AppUser creator;
+
 }

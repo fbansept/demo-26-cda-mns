@@ -3,6 +3,7 @@ package edu.ban7.demo26cdamns.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.dao.ComponentDao;
 import edu.ban7.demo26cdamns.model.Acknowledge;
+import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.model.Component;
 import edu.ban7.demo26cdamns.view.AcknowledgeView;
 import edu.ban7.demo26cdamns.view.ComponentView;
@@ -64,6 +65,11 @@ public class ComponentController {
             @RequestBody @Valid Component componentToInsert) {
 
         componentToInsert.setId(null);
+
+        //en attendant l'authentification
+        AppUser userBidon = new AppUser();
+        userBidon.setId(1);
+        componentToInsert.setCreator(userBidon);
 
         componentDao.save(componentToInsert);
 
