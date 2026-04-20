@@ -27,7 +27,19 @@ INSERT INTO tag_component (component_id, tag_id)  VALUES
 INSERT INTO skill (name)  VALUES
       ('developpeur'),
       ('concepteur'),
-      ('designer');
+      ('designer'),
+    ('A'),
+    ('B'),
+    ('C'),
+    ('D'),
+    ('E'),
+    ('F'),
+    ('G'),
+    ('H'),
+    ('I'),
+    ('J'),
+    ('K'),
+    ('L');
 
 INSERT INTO acknowledge (user_id ,skill_id , level )  VALUES
       (2, 1, 5),

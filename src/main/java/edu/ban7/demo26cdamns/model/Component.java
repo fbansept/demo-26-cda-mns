@@ -43,6 +43,7 @@ public class Component {
 
     @Column(columnDefinition = "TEXT")
     @JsonView(ComponentView.class)
+    @Length(max = 1000)
     protected String description;
 
     @ManyToOne

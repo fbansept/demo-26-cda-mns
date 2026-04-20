@@ -22,6 +22,7 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(ComponentView.class)
     protected Integer id;
 
     @Column(length = 20,nullable = false, unique = true)

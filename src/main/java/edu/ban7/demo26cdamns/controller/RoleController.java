@@ -16,6 +16,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/role")
+@CrossOrigin
 public class RoleController {
     
     protected final RoleDao roleDao;

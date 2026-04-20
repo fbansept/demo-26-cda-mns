@@ -1,108 +1,48 @@
 package edu.ban7.demo26cdamns.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import edu.ban7.demo26cdamns.dao.AppUserDao;
 import edu.ban7.demo26cdamns.dto.AppUserStat;
 import edu.ban7.demo26cdamns.model.AppUser;
-import edu.ban7.demo26cdamns.model.Role;
+import edu.ban7.demo26cdamns.service.AppUserService;
 import edu.ban7.demo26cdamns.view.AppUserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "AppUser", description = "API pour manipuler les utilisateurs")
+@RequiredArgsConstructor
+@CrossOrigin
 public class AppUserController {
     
-    protected AppUserDao appUserDao;
-
-    @Autowired
-    public AppUserController(AppUserDao appUserDao) {
-        this.appUserDao = appUserDao;
-    }
+    protected final AppUserService userService;
 
     @GetMapping("/user/list")
     @JsonView(AppUserView.class)
     public List<AppUser> getAll() {
-        return appUserDao.findAll();
+        return userService.findAll();
     }
 
     @GetMapping("/user/list-admin")
     @JsonView(AppUserView.class)
     public List<AppUser> getAllAdmin() {
-
-        List<AppUser> userList = appUserDao.findAll();
-
-        List<AppUser> adminList = new ArrayList<>();
-
-        for (AppUser user : userList) {
-            if(user.getRole().getName().equals("ADMIN")) {
-                adminList.add(user);
-            }
-        }
-
-        return adminList;
+        return userService.getAllAdmin();
     }
 
-    @GetMapping("/user/list-admin-v1.5")
-    @JsonView(AppUserView.class)
-    public List<AppUser> getAllAdminWithStream() {
-
-        return appUserDao.findAll().stream()
-                .filter(u -> u.getRole().getName().equals("ADMIN"))
-                .toList();
-    }
-
-    @GetMapping("/user/list-admin-v2")
-    @JsonView(AppUserView.class)
-    public List<AppUser> getAllAdminV2() {
-        return appUserDao.findAllByRole(new Role(1, "ADMIN"));
-    }
-
-    @GetMapping("/user/list-admin-v3")
-    @JsonView(AppUserView.class)
-    public List<AppUser> getAllAdminV3() {
-        return appUserDao.retourneListeAdmin();
-    }
-
-    @GetMapping("/user/list-admin-v4")
-    @JsonView(AppUserView.class)
-    public List<AppUser> getAllAdminV4() {
-        return appUserDao.retourneListeSelonNomRole("ADMIN");
-    }
-
-    @GetMapping("/user/list-admin-v4.5")
-    @JsonView(AppUserView.class)
-    public List<AppUser> getAllAdminV4_5() {
-
-        List<AppUser> admins = appUserDao.retourneListeSelonRole(new Role(1, "ADMIN"));
-
-        return admins;
-    }
 
     @GetMapping("/user/stat-admin")
-    public Object[][] getStatAdmin() {
-        return appUserDao.retourneTableauRepartitionRole();
+    public List<AppUserStat> getStatAdmin() {
+        return userService.getStatAdminV2();
     }
-    
-
-    @GetMapping("/user/stat-admin-v2")
-    public List<AppUserStat> getStatAdminV2() {
-        return appUserDao.retourneStatRole();
-    }
-
 
     @GetMapping("/user/{id}")
     @JsonView(AppUserView.class)
@@ -115,7 +55,7 @@ public class AppUserController {
     })
     public ResponseEntity<AppUser> get(@PathVariable int id) {
 
-        Optional<AppUser> optionalUser = appUserDao.findById(id);
+        Optional<AppUser> optionalUser = userService.findById(id);
 
         if(optionalUser.isEmpty()) {
             //ResponseEntity.notFound().build();
@@ -124,7 +64,6 @@ public class AppUserController {
 
         //return ResponseEntity.ok(optionalUser.get());
         return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
-
     }
 
     @PostMapping("/user")
@@ -134,9 +73,7 @@ public class AppUserController {
             @Validated(AppUser.OnCreate.class)
             AppUser userToInsert) {
 
-        userToInsert.setId(null);
-
-        appUserDao.save(userToInsert);
+        userService.insert(userToInsert);
 
         return new ResponseEntity<>(userToInsert, HttpStatus.CREATED);
 
@@ -145,14 +82,14 @@ public class AppUserController {
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
 
-        Optional<AppUser> optionalUser = appUserDao.findById(id);
+        Optional<AppUser> optionalUser = userService.findById(id);
 
         if(optionalUser.isEmpty()) {
             //ResponseEntity.notFound().build();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        appUserDao.deleteById(id);
+        userService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
@@ -165,24 +102,14 @@ public class AppUserController {
             @Validated(AppUser.OnUpdate.class)
             AppUser userToUpdate) {
 
-        Optional<AppUser> optionalUser = appUserDao.findById(id);
+        try {
+            userService.update(id, userToUpdate);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        if(optionalUser.isEmpty()) {
-            //ResponseEntity.notFound().build();
+        } catch (AppUserService.UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        //on écrase l'id du json par celui en paramètre
-        userToUpdate.setId(id);
-
-        //On réaffecte les anciennes valeurs qui ne doivent pas etre changée
-        userToUpdate.setEmail(optionalUser.get().getEmail());
-        userToUpdate.setPassword(optionalUser.get().getPassword());
-        userToUpdate.setRole(optionalUser.get().getRole());
-
-        appUserDao.save(userToUpdate);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -21,7 +21,6 @@ public interface AppUserDao extends JpaRepository<AppUser, Integer> {
     @Query("FROM AppUser u JOIN u.role r WHERE r.name = 'ADMIN'")
     List<AppUser> retourneListeAdmin();
 
-
     @Query("FROM AppUser u JOIN u.role r WHERE r.name = :nomRole")
     List<AppUser> retourneListeSelonNomRole(@Param("nomRole") String nomRole);
     
@@ -41,6 +40,8 @@ public interface AppUserDao extends JpaRepository<AppUser, Integer> {
             "LEFT JOIN u.role r " +
             "GROUP BY r.name")
     List<AppUserStat> retourneStatRole();
+
+    
 
 
 }
