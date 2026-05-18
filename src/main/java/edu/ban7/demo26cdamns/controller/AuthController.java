@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.service.AppUserService;
 import edu.ban7.demo26cdamns.view.AppUserView;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,7 +46,12 @@ public class AuthController {
             authenticationProvider.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
-            return new ResponseEntity<>("Le futur JWT", HttpStatus.OK);
+            String jwt = Jwts.builder()
+                    .setSubject(user.getEmail())
+                    .signWith(SignatureAlgorithm.HS256, "azerty")
+                    .compact();
+
+            return new ResponseEntity<>(jwt, HttpStatus.OK);
 
         } catch (AuthenticationException e) {
 
