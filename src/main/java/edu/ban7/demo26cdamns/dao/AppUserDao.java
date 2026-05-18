@@ -10,9 +10,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface AppUserDao extends JpaRepository<AppUser, Integer> {
+
+    Optional<AppUser> findByEmail(String email);
+
     List<AppUser> findAllByRole(Role role);
 
     // SELECT * FROM app_user as u

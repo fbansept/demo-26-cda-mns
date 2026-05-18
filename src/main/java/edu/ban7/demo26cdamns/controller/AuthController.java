@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AppUserService userService;
+    private final AuthenticationProvider authenticationProvider;
 
     @PostMapping("/sign-in")
     @JsonView(AppUserView.class)
@@ -31,5 +35,21 @@ public class AuthController {
 
         return new ResponseEntity<>(userToInsert, HttpStatus.CREATED);
 
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody AppUser user) {
+
+        try {
+            authenticationProvider.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
+            return new ResponseEntity<>("Le futur JWT", HttpStatus.OK);
+
+        } catch (AuthenticationException e) {
+
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        }
     }
 }
