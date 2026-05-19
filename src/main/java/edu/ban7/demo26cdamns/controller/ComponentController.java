@@ -5,6 +5,9 @@ import edu.ban7.demo26cdamns.dao.ComponentDao;
 import edu.ban7.demo26cdamns.model.Acknowledge;
 import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.model.Component;
+import edu.ban7.demo26cdamns.security.IsAdmin;
+import edu.ban7.demo26cdamns.security.IsSupplier;
+import edu.ban7.demo26cdamns.security.IsUser;
 import edu.ban7.demo26cdamns.view.AcknowledgeView;
 import edu.ban7.demo26cdamns.view.ComponentView;
 import jakarta.validation.Valid;
@@ -20,7 +23,6 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class ComponentController {
     
     protected ComponentDao componentDao;
@@ -32,13 +34,14 @@ public class ComponentController {
 
     @GetMapping("/component/list")
     @JsonView(ComponentView.class)
+    @IsUser
     public List<Component> getAll() {
         return componentDao.findAll();
     }
 
     @GetMapping("/component/list-v2")
     @JsonView(ComponentView.class)
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @IsUser
     public List<Component> getAllV2() {
 
         List<Component> list = componentDao.retourneTout();
@@ -48,6 +51,7 @@ public class ComponentController {
 
     @GetMapping("/component/{id}")
     @JsonView(ComponentView.class)
+    @IsUser
     public ResponseEntity<Component> get(@PathVariable int id) {
 
         Optional<Component> optionalComponent = componentDao.findById(id);
@@ -64,6 +68,7 @@ public class ComponentController {
 
     @PostMapping("/component")
     @JsonView(ComponentView.class)
+    @IsSupplier
     public ResponseEntity<Component> create(
             @RequestBody @Valid Component componentToInsert) {
 
@@ -81,6 +86,7 @@ public class ComponentController {
     }
 
     @DeleteMapping("/component/{id}")
+    @IsAdmin
     public ResponseEntity<Void> delete(@PathVariable int id) {
 
         Optional<Component> optionalComponent = componentDao.findById(id);
@@ -97,6 +103,7 @@ public class ComponentController {
     }
 
     @PutMapping("/component/{id}")
+    @IsSupplier
     public ResponseEntity<Void> update(
             @PathVariable int id,
             @RequestBody
