@@ -59,9 +59,6 @@ public class AppUser {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     protected Role role;
 
-    @ManyToMany
-    protected List<RoleEnum> roles;
-
     @OneToMany(mappedBy = "loaner")
     @JsonView(AppUserView.class)
     List<Component> components = new ArrayList<>();

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class AppUserController {
     
     protected final AppUserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/list")
     @JsonView(AppUserView.class)
@@ -73,6 +75,7 @@ public class AppUserController {
             @Validated(AppUser.OnCreate.class)
             AppUser userToInsert) {
 
+        userToInsert.setPassword(passwordEncoder.encode(userToInsert.getPassword()));
         userService.insert(userToInsert);
 
         return new ResponseEntity<>(userToInsert, HttpStatus.CREATED);

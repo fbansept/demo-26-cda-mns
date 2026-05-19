@@ -2,6 +2,7 @@ package edu.ban7.demo26cdamns.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.model.AppUser;
+import edu.ban7.demo26cdamns.security.AppUserDetails;
 import edu.ban7.demo26cdamns.service.AppUserService;
 import edu.ban7.demo26cdamns.view.AppUserView;
 import io.jsonwebtoken.Jwts;
@@ -14,11 +15,15 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,12 +32,16 @@ public class AuthController {
 
     private final AppUserService userService;
     private final AuthenticationProvider authenticationProvider;
+    private final PasswordEncoder passwordEncoder;
+
+
 
     @PostMapping("/sign-in")
     @JsonView(AppUserView.class)
     public ResponseEntity<AppUser> signIn(
             @RequestBody @Validated(AppUser.OnCreate.class) AppUser userToInsert) {
 
+        userToInsert.setPassword(passwordEncoder.encode(userToInsert.getPassword()));
         userService.insert(userToInsert);
 
         return new ResponseEntity<>(userToInsert, HttpStatus.CREATED);
@@ -43,11 +52,26 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody AppUser user) {
 
         try {
-            authenticationProvider.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+            AppUserDetails appUser = (AppUserDetails) authenticationProvider
+                    .authenticate(new UsernamePasswordAuthenticationToken(
+                            user.getEmail(),
+                            user.getPassword()))
+                    .getPrincipal();
+// HERITAGE
+//            String role = appUser.getDirecteur() != null
+//                    ? "directeur"
+//                    : (appUser.getTechnicien() != null
+//                        ? "technicien"
+//                        : "client")
 
             String jwt = Jwts.builder()
                     .setSubject(user.getEmail())
+                    .addClaims(Map.of("role", appUser.getUser().getRole().getName()))
+// PLUSIEURS ROLES
+//                    .addClaims(Map.of("roles", appUser.getUser().getRoles().stream()
+//                            .map(r -> r.getName().name())
+//                            .collect(Collectors.joining(","))))
+
                     .signWith(SignatureAlgorithm.HS256, "azerty")
                     .compact();
 

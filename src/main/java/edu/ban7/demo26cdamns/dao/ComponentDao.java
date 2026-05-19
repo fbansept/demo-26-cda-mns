@@ -17,9 +17,6 @@ public interface ComponentDao extends JpaRepository<Component, Integer> {
     @Query("FROM Component c")
     List<Component> retourneTout();
 
-    @Query("FROM Component co JOIN co.creator cr WHERE cr == :createur")
-    List<Component> retourneToutLesComposantsDuCreateur(@Param("createur") AppUser createur);
-
     List<Component> findAllByCreator(AppUser creator);
 
 }
