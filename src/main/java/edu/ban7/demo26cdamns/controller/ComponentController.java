@@ -2,9 +2,8 @@ package edu.ban7.demo26cdamns.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.dao.ComponentDao;
-import edu.ban7.demo26cdamns.model.Acknowledge;
-import edu.ban7.demo26cdamns.model.AppUser;
-import edu.ban7.demo26cdamns.model.Component;
+import edu.ban7.demo26cdamns.model.*;
+import edu.ban7.demo26cdamns.security.AppUserDetails;
 import edu.ban7.demo26cdamns.security.IsAdmin;
 import edu.ban7.demo26cdamns.security.IsSupplier;
 import edu.ban7.demo26cdamns.security.IsUser;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -49,6 +50,13 @@ public class ComponentController {
         return list;
     }
 
+    @GetMapping("/component/list-by-creator")
+    @JsonView(ComponentView.class)
+    @IsSupplier
+    public List<Component> listByCreator(@AuthenticationPrincipal AppUserDetails userDetails) {
+        return componentDao.findAllByCreator(userDetails.getUser());
+    }
+
     @GetMapping("/component/{id}")
     @JsonView(ComponentView.class)
     @IsUser
@@ -70,14 +78,11 @@ public class ComponentController {
     @JsonView(ComponentView.class)
     @IsSupplier
     public ResponseEntity<Component> create(
+            @AuthenticationPrincipal AppUserDetails userDetails,
             @RequestBody @Valid Component componentToInsert) {
 
         componentToInsert.setId(null);
-
-        //en attendant l'authentification
-        AppUser userBidon = new AppUser();
-        userBidon.setId(1);
-        componentToInsert.setCreator(userBidon);
+        componentToInsert.setCreator(userDetails.getUser());
 
         componentDao.save(componentToInsert);
 
@@ -105,6 +110,7 @@ public class ComponentController {
     @PutMapping("/component/{id}")
     @IsSupplier
     public ResponseEntity<Void> update(
+            @AuthenticationPrincipal AppUserDetails userDetails,
             @PathVariable int id,
             @RequestBody
             @Valid
@@ -116,9 +122,22 @@ public class ComponentController {
             //ResponseEntity.notFound().build();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        
+        //on verifie si l'utilisateur est admin ou si il est le propriétaire de la resource
+        //sinon on envoie une erreur 403
+        if(!userDetails.getUser().getRole().getName().equals("ADMIN")
+                && !optionalComponent.get().getCreator().getId().equals(userDetails.getUser().getId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         //on écrase l'id du json par celui en paramètre
         componentToUpdate.setId(id);
+
+        //on écrase le créateur envoyé dans le JSON dans le cas où un simple supplier l'aurait modifié
+        //mais on permet aux admin de modifier le créateur du composant
+        if(!userDetails.getUser().getRole().getName().equals("ADMIN")) {
+            componentToUpdate.setCreator(userDetails.getUser());
+        }
 
         componentDao.save(componentToUpdate);
 
