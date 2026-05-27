@@ -5,6 +5,7 @@ import edu.ban7.demo26cdamns.dto.AppUserStat;
 import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.model.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class AppUserService {
     public static class UserNotFoundException extends Exception {}
 
     protected final AppUserDao appUserDao;
+    protected final PasswordEncoder passwordEncoder;
 
     public List<AppUser> findAll() {
         return appUserDao.findAll();
@@ -60,6 +62,7 @@ public class AppUserService {
 
     public void insert(AppUser user) {
         user.setId(null);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         appUserDao.save(user);
     }
 

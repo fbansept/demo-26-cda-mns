@@ -71,7 +71,6 @@ public class ComponentController {
 
         //return ResponseEntity.ok(optionalComponent.get());
         return new ResponseEntity<>(optionalComponent.get(), HttpStatus.OK);
-
     }
 
     @PostMapping("/component")
@@ -122,7 +121,7 @@ public class ComponentController {
             //ResponseEntity.notFound().build();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
+
         //on verifie si l'utilisateur est admin ou si il est le propriétaire de la resource
         //sinon on envoie une erreur 403
         if(!userDetails.getUser().getRole().getName().equals("ADMIN")
