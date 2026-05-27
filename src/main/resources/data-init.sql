@@ -13,7 +13,8 @@ values  (1, '2021-03-26 15:58:47.513000', '2026-03-26 15:58:47.513103', 'Utilisa
 
 INSERT INTO component (serial_number, name, description, loaner_id, creator_id) VALUES
     ('ECR0000138', 'Ecran de salle', 'Rayure sur le coté', null, 1),
-    ('ECR0000139', 'Ecran de salle', 'Bon état', 2, 1);
+    ('ECR0000139', 'Ecran de salle', 'Bon état', 2, 4),
+    ('ECR0000140', 'Ecran de salle', 'Bon état', 2, 4);
 
 INSERT INTO tag (name) VALUES
     ('détérioré'),

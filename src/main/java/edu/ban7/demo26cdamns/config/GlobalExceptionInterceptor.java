@@ -2,6 +2,7 @@ package edu.ban7.demo26cdamns.config;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -35,4 +36,7 @@ public class GlobalExceptionInterceptor {
 //
         return Map.of("Erreur", "Erreur de contrainte dans la base de données");
     }
+
+
+
 }

@@ -35,7 +35,6 @@ public class ComponentController {
 
     @GetMapping("/component/list")
     @JsonView(ComponentView.class)
-    @IsUser
     public List<Component> getAll() {
         return componentDao.findAll();
     }
