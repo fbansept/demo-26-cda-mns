@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.dto.AppUserStat;
 import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.service.AppUserService;
+import edu.ban7.demo26cdamns.service.IAppUserService;
 import edu.ban7.demo26cdamns.view.AppUserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,8 +26,7 @@ import java.util.Optional;
 @CrossOrigin
 public class AppUserController {
     
-    protected final AppUserService userService;
-    private final PasswordEncoder passwordEncoder;
+    protected final IAppUserService userService;
 
     @GetMapping("/user/list")
     @JsonView(AppUserView.class)
@@ -74,8 +74,7 @@ public class AppUserController {
             @RequestBody
             @Validated(AppUser.OnCreate.class)
             AppUser userToInsert) {
-
-        userToInsert.setPassword(passwordEncoder.encode(userToInsert.getPassword()));
+        
         userService.insert(userToInsert);
 
         return new ResponseEntity<>(userToInsert, HttpStatus.CREATED);

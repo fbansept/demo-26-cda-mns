@@ -1,6 +1,7 @@
 package edu.ban7.demo26cdamns.mock;
 
 import edu.ban7.demo26cdamns.dao.AppUserDao;
+import edu.ban7.demo26cdamns.dto.AppUserStat;
 import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.model.Role;
 import org.springframework.data.domain.Example;
@@ -9,6 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -114,7 +119,9 @@ public class MockAppUserDao implements AppUserDao {
                     "a@a.com",
                     "root",
                     "UserA", 
-                    roleAdmin);
+                    roleAdmin, new ArrayList<>(),
+                    LocalDateTime.of(2023,12,20,0,0,0),
+                    LocalDateTime.now());
             
             return Optional.of(fakeUser);
         }
@@ -180,5 +187,40 @@ public class MockAppUserDao implements AppUserDao {
     @Override
     public Optional<AppUser> findByEmail(String email) {
         return Optional.empty();
+    }
+
+    @Override
+    public List<AppUser> findAllByRole(Role role) {
+        return List.of();
+    }
+
+    @Override
+    public List<AppUser> retourneListeAdmin() {
+        return List.of();
+    }
+
+    @Override
+    public List<AppUser> retourneListeSelonNomRole(String nomRole) {
+        return List.of();
+    }
+
+    @Override
+    public List<AppUser> retourneListeSelonRole(Role role) {
+        return List.of();
+    }
+
+    @Override
+    public Integer retourneNombreAdmin() {
+        return 0;
+    }
+
+    @Override
+    public Object[][] retourneTableauRepartitionRole() {
+        return new Object[0][];
+    }
+
+    @Override
+    public List<AppUserStat> retourneStatRole() {
+        return List.of();
     }
 }

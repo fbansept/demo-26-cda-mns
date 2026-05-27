@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.demo26cdamns.model.AppUser;
 import edu.ban7.demo26cdamns.security.AppUserDetails;
 import edu.ban7.demo26cdamns.service.AppUserService;
+import edu.ban7.demo26cdamns.service.IAppUserService;
 import edu.ban7.demo26cdamns.view.AppUserView;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class AuthController {
 
-    private final AppUserService userService;
+    private final IAppUserService userService;
     private final AuthenticationProvider authenticationProvider;
 
 

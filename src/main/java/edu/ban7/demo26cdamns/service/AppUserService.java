@@ -12,17 +12,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AppUserService {
-    
-    public static class UserNotFoundException extends Exception {}
+public class AppUserService implements IAppUserService {
 
     protected final AppUserDao appUserDao;
     protected final PasswordEncoder passwordEncoder;
 
+    @Override
     public List<AppUser> findAll() {
         return appUserDao.findAll();
     }
 
+    @Override
     public List<AppUser> getAllAdminWithStream() {
 
         return appUserDao.findAll().stream()
@@ -30,46 +30,56 @@ public class AppUserService {
                 .toList();
     }
 
+    @Override
     public List<AppUser> getAllAdminV2() {
         return appUserDao.findAllByRole(new Role(1, "ADMIN"));
     }
 
+    @Override
     public List<AppUser> getAllAdminV3() {
         return appUserDao.retourneListeAdmin();
     }
 
+    @Override
     public List<AppUser> getAllAdminV4() {
         return appUserDao.retourneListeSelonNomRole("ADMIN");
     }
 
+    @Override
     public List<AppUser> getAllAdmin() {
         return appUserDao.retourneListeSelonRole(new Role(1, "ADMIN"));
     }
 
+    @Override
     public Object[][] getStatAdmin() {
         return appUserDao.retourneTableauRepartitionRole();
     }
 
+    @Override
     public List<AppUserStat> getStatAdminV2() {
         return appUserDao.retourneStatRole();
     }
 
+    @Override
     public Optional<AppUser> findById(int id) {
 
         return appUserDao.findById(id);
 
     }
 
+    @Override
     public void insert(AppUser user) {
         user.setId(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         appUserDao.save(user);
     }
 
+    @Override
     public void delete(int id) {
         appUserDao.deleteById(id);
     }
 
+    @Override
     public void update(int id, AppUser userToUpdate) throws UserNotFoundException {
         
         Optional<AppUser> optionalAppUser = appUserDao.findById(id);
