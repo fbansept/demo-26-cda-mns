@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,6 +31,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @CrossOrigin
 public class AuthController {
+
+    @Value("${jwt.secret}")
+    protected String jwtSecret;
 
     private final IAppUserService userService;
     private final AuthenticationProvider authenticationProvider;
@@ -70,7 +74,7 @@ public class AuthController {
 //                            .map(r -> r.getName().name())
 //                            .collect(Collectors.joining(","))))
 
-                    .signWith(SignatureAlgorithm.HS256, "azerty")
+                    .signWith(SignatureAlgorithm.HS256, jwtSecret)
                     .compact();
 
             return new ResponseEntity<>(jwt, HttpStatus.OK);
