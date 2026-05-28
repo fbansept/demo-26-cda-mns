@@ -10,6 +10,23 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+    networks:
+      - backend
+
+  app:
+    image: fbansept/demo-cda-26-back:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+  front:
+    image: fbansept/demo-cda-26-front:latest
+    ports:
+      - "80:80"
 
 volumes:
   postgres_data:
+
+networks:
+  backend:

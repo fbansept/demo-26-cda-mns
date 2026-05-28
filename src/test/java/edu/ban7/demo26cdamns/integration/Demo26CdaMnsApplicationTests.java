@@ -82,7 +82,7 @@ class Demo26CdaMnsApplicationTests {
         Component fakeComponent = new Component(
                 null,
                 "abc",
-                "0123456789",
+                "1111111111",
                 "c",
                 fakeUser,
                 new ArrayList<>(),
